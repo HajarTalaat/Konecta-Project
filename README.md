@@ -1,5 +1,6 @@
 # Konecta-Project
-Konecta-Graduation-Project
+
+# Konecta-Graduation-Project
 
 # ✅ Step 1: Infrastructure Provisioning with Terraform:
 
@@ -9,13 +10,17 @@ Passed its vpc_id, public_subnet_ids and private_subnet_ids into Terraform.
 
 Provisioned via Terraform:
 
-A private EKS cluster (2 nodes, no public node IPs)
+A private EKS cluster (2 nodes, no public node IPs) using the AWS EKS Terraform module.
 
 A public Jenkins EC2 (for CI/CD), with an SSH key pair, security group, etc.
 
 An S3 bucket to store Terraform state (configured as the backend)
 
 Automated Jenkins bootstrap by having Terraform spin up the EC2 and then trigger a Bash/Ansible workflow (using a null_resource with remote-exec & local-exec).
+
+Enabled cluster access using a kubeconfig file generated on the Terraform EC2 instance via: aws eks update-kubeconfig --region <region> --name <cluster_name>
+
+Verified the cluster and node group creation using: kubectl get nodes
 
 ![p1](https://github.com/user-attachments/assets/481fe9f4-671c-4a50-8f3c-774f28513982)
 
@@ -61,7 +66,9 @@ Exposes port 8000 and runs python app.py binding to 0.0.0.0
 
 Built and tested locally (linking to a Redis container), then pushed the image to Docker Hub.
 
-Confirmed the counter UI at
+Confirmed the counter UI at: http://44.193.82.246:8000/
+
+And Jenkins is accessible at: http://44.193.82.246:8080/
 
 ![p4](https://github.com/user-attachments/assets/fa93c6a5-065e-476d-b2ed-79d36b0b31f4)
 
