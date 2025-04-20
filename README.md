@@ -54,7 +54,7 @@ Runs the playbook against the private host
 Hooked it all up so that Terraform’s null_resource waits for the EC2, then SSHs into it, and finally invokes the Ansible script—fully hands‑off.
 
 
-# ✅ Step 3: Containerization of the Python‐Redis Counter App
+# ✅ Step 3: Containerization of the Python‐Redis Counter App:
 
 Organized the app directory.
 
@@ -75,15 +75,19 @@ And Jenkins is accessible at: http://44.193.82.246:8080/
 ![p5](https://github.com/user-attachments/assets/2bc0b66f-95d4-452f-a567-789994097cc8)
 
 
+# ✅ Step 4: Grant EC2 Instance Access to EKS Cluster:
 
+To allow the Terraform EC2 instance (e.g. a bastion or Jenkins server) to interact with the Amazon EKS cluster via kubectl, I followed these steps:
 
+Created an IAM Role for EC2 with EKS Permissions: AmazonEKSClusterPolicy, AmazonEKSWorkerNodePolicy
 
+Attached IAM Role to EC2 Instance
 
+Ensure EC2 Instance Uses the IAM Role through: aws sts get-caller-identity
 
+Updated kubeconfig and Tested Access through: aws eks update-kubeconfig --region us-east-1 --name devops-grad-eks, kubectl get nodes
 
-
-
-
+![p8](https://github.com/user-attachments/assets/96aa2b63-cd1e-462b-994a-5eea2b28d9db)
 
 
 
