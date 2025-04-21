@@ -2,12 +2,9 @@ pipeline {
     agent any
 
     environment {
-        // ECR repo URL
         ECR_REGISTRY = '378505040508.dkr.ecr.us-east-1.amazonaws.com'
-        IMAGE_NAME = 'python-redis-counter'
-        AWS_REGION = 'us-east-1'
-        // Inject kubeconfig from Jenkins credentials (file)
-        KUBECONFIG_CREDENTIAL_ID = 'kubeconfig'
+        IMAGE_NAME   = 'python-redis-counter'
+        AWS_REGION   = 'us-east-1'
     }
 
     stages {
@@ -20,18 +17,17 @@ pipeline {
         stage('Set Environment Variables') {
             steps {
                 script {
-                    // Extract branch name to determine environment
                     def branch = env.GIT_BRANCH.replaceAll('origin/', '')
                     if (branch == 'test') {
                         env.ENVIRONMENT = 'test'
-                        env.NAMESPACE = 'test'
-                        env.REDIS_HOST = 'redis.test.svc.cluster.local'
+                        env.NAMESPACE   = 'test'
+                        env.REDIS_HOST  = 'redis.test.svc.cluster.local'
                     } else if (branch == 'prod') {
                         env.ENVIRONMENT = 'prod'
-                        env.NAMESPACE = 'prod'
-                        env.REDIS_HOST = 'redis.prod.svc.cluster.local'
+                        env.NAMESPACE   = 'prod'
+                        env.REDIS_HOST  = 'redis.prod.svc.cluster.local'
                     } else {
-                        error "Unsupported branch: ${branch}. Only 'test' and 'prod' are supported."
+                        error "Unsupported branch: ${branch}. Only 'test' and 'prod' are allowed."
                     }
                 }
             }
@@ -39,60 +35,54 @@ pipeline {
 
         stage('Login to ECR') {
             steps {
-                sh '''
-                    aws ecr get-login-password --region $AWS_REGION | \
-                    docker login --username AWS --password-stdin $ECR_REGISTRY
-                '''
+                sh """
+                    aws ecr get-login-password --region ${AWS_REGION} | \
+                    docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                """
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Push Docker Image') {
             steps {
-                sh '''
-                    docker build -t $IMAGE_NAME .
-                    docker tag $IMAGE_NAME:latest $ECR_REGISTRY/$IMAGE_NAME:latest
-                '''
-            }
-        }
-
-        stage('Push to ECR') {
-            steps {
-                sh '''
-                    docker push $ECR_REGISTRY/$IMAGE_NAME:latest
-                '''
+                sh """
+                    docker build -t ${IMAGE_NAME} .
+                    docker tag ${IMAGE_NAME}:latest ${ECR_REGISTRY}/${IMAGE_NAME}:latest
+                    docker push ${ECR_REGISTRY}/${IMAGE_NAME}:latest
+                """
             }
         }
 
         stage('Deploy to EKS') {
             environment {
-                KUBECONFIG = credentials('kubeconfig') // Reference the kubeconfig file from Jenkins
+                KUBECONFIG = credentials('kubeconfig')
             }
             steps {
-                sh '''
-                    # Replace placeholders in manifest files
-                    sed "s|<your_ecr_image_url>|$ECR_REGISTRY/$IMAGE_NAME:latest|g; \
-                         s|<your_environment>|$ENVIRONMENT|g; \
-                         s|<redis_service_host>|$REDIS_HOST|g" \
-                         kubernetes/prod/deployment.yaml > kubernetes/prod/deployment-gen.yaml
+                sh """
+                    mkdir -p kubernetes/${NAMESPACE}
 
-                    kubectl apply -f k8s/namespace.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/configmap.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/redis-deployment.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/redis-service.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/deployment-gen.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/service.yaml
-                '''
+                    sed \\
+                        -e "s|<your_ecr_image_url>|${ECR_REGISTRY}/${IMAGE_NAME}:latest|g" \\
+                        -e "s|<your_environment>|${ENVIRONMENT}|g" \\
+                        -e "s|<redis_service_host>|${REDIS_HOST}|g" \\
+                        kubernetes/${NAMESPACE}/deployment.yaml > kubernetes/${NAMESPACE}/deployment-gen.yaml
+
+                    kubectl apply -f kubernetes/namespaces.yaml
+                    kubectl apply -n ${NAMESPACE} -f kubernetes/${NAMESPACE}/configmap.yaml
+
+                    if [ -f kubernetes/${NAMESPACE}/redis-deployment.yaml ]; then
+                      kubectl apply -n ${NAMESPACE} -f kubernetes/${NAMESPACE}/redis-deployment.yaml
+                    fi
+
+                    kubectl apply -n ${NAMESPACE} -f kubernetes/${NAMESPACE}/service.yaml
+                    kubectl apply -n ${NAMESPACE} -f kubernetes/${NAMESPACE}/deployment-gen.yaml
+                """
             }
         }
     }
 
     post {
-        failure {
-            echo '❌ Build failed!'
-        }
-        success {
-            echo '✅ Successfully deployed to EKS!'
-        }
+        success { echo '✅ Deployed successfully!' }
+        failure { echo '❌ Pipeline failed. Check logs.' }
     }
 }
 
