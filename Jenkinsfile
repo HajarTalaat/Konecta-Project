@@ -75,12 +75,12 @@ pipeline {
                          s|<redis_service_host>|$REDIS_HOST|g" \
                          kubernetes/test/deployment.yaml > kubernetes/test/deployment-gen.yaml
 
-                    kubectl apply -f kubernetes/namespace.yaml
-                    kubectl apply -n $NAMESPACE -f kubernetes/configmap.yaml
-                    kubectl apply -n $NAMESPACE -f kubernetes/redis-deployment.yaml
-                    kubectl apply -n $NAMESPACE -f kubernetes/redis-service.yaml
-                    kubectl apply -n $NAMESPACE -f kubernetes/deployment-gen.yaml
-                    kubectl apply -n $NAMESPACE -f kubernetes/service.yaml
+                    kubectl apply -f kubernetes/namespaces.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/test/configmap.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/test/redis-deployment.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/test/redis-service.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/test/deployment-gen.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/test/service.yaml
                 '''
             }
         }
