@@ -76,11 +76,11 @@ pipeline {
                          kubernetes/test/deployment.yaml > kubernetes/test/deployment-gen.yaml
 
                     kubectl apply -f k8s/namespace.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/configmap.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/redis-deployment.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/redis-service.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/deployment-gen.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/service.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/configmap.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/redis-deployment.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/redis-service.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/deployment-gen.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/service.yaml
                 '''
             }
         }
