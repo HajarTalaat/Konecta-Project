@@ -73,14 +73,14 @@ pipeline {
                     sed "s|<your_ecr_image_url>|$ECR_REGISTRY/$IMAGE_NAME:latest|g; \
                          s|<your_environment>|$ENVIRONMENT|g; \
                          s|<redis_service_host>|$REDIS_HOST|g" \
-                         k8s/deployment.yaml > k8s/deployment-gen.yaml
+                         kubernetes/deployment.yaml > kubernetes/deployment-gen.yaml
 
-                    kubectl apply -f k8s/namespace.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/configmap.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/redis-deployment.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/redis-service.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/deployment-gen.yaml
-                    kubectl apply -n $NAMESPACE -f k8s/service.yaml
+                    kubectl apply -f kubernetes/namespace.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/configmap.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/redis-deployment.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/redis-service.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/deployment-gen.yaml
+                    kubectl apply -n $NAMESPACE -f kubernetes/service.yaml
                 '''
             }
         }
