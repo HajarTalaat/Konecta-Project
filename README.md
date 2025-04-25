@@ -90,6 +90,97 @@ Updated kubeconfig and Tested Access through: aws eks update-kubeconfig --region
 ![p8](https://github.com/user-attachments/assets/96aa2b63-cd1e-462b-994a-5eea2b28d9db)
 
 
+# ✅ Step 5: CI/CD Pipeline with Jenkins for EKS Deployment:
+
+✔️ Jenkinsfile Created to Automate the Pipeline:
+
+A Jenkinsfile was written and committed to the application GitHub repository. It automates the following tasks based on branch logic:
+
+1. Build & Push Docker Image to Amazon ECR
+
+Used the docker CLI within the Jenkins pipeline to:
+
+Authenticate with ECR
+
+Build the Docker image using the Dockerfile
+
+Tag the image using the ECR format:
+
+378505040508.dkr.ecr.us-east-1.amazonaws.com/python-redis-counter:<git-commit-hash>
+
+Push the tagged image to ECR
+
+2. Deploy to EKS Based on Branch:
+   
+The pipeline dynamically determines the branch name:
+
+For test → deploys to test namespace
+
+For prod → deploys to prod namespace
+
+Uses kubectl apply -f k8s/deployment.yaml after dynamically updating:
+
+Namespace
+
+Docker image tag
+
+ENVIRONMENT variable (test or prod)
+
+Response is confirmed using:
+
+curl http://<load-balancer-dns>
+
+Expected result:
+
+"Hello from test" if deployed to test
+
+"Hello from prod" if deployed to prod
+
+![p9](https://github.com/user-attachments/assets/848c19b3-8898-477a-9f52-892563adbbe4)
+
+![p10](https://github.com/user-attachments/assets/1a4aeb9a-8742-40a5-b351-a85d214cb22c)
+
+![p11](https://github.com/user-attachments/assets/bc8389c0-b409-4b68-8b91-fc028e66b244)
+
+
+3. Environment Variables Passed via ConfigMap/Secret:
+REDIS_HOST and ENVIRONMENT are injected through Kubernetes manifests:
+
+Stored in ConfigMap and Secret YAMLs
+
+Applied during deployment using kubectl apply
+
+Redis host address is configurable and retrieved securely from Jenkins credentials.
+
+4. Webhook Trigger Setup from GitHub:
+Jenkins is configured to receive webhook events from GitHub:
+
+Webhook configured at the repo level to trigger on:
+
+push to test or prod branches
+
+pull_request merged to test or prod
+
+Jenkins GitHub plugin used to handle webhook events
+
+Jenkins pipeline polling is disabled (webhooks only)
+
+5. Secure Secret Management via Jenkins Credentials Store:
+No credentials or secrets are hardcoded in the Jenkinsfile.
+
+Instead, sensitive data (e.g., AWS credentials, Redis host) is retrieved using: withCredentials([usernamePassword(credentialsId: 'aws-creds', ...)])
+
+Credentials added via: Jenkins dashboard → Manage Jenkins → Credentials → Global
+
+Includes: 
+
+AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY
+
+REDIS_HOST
+
+ECR login credentials (if needed separately)
+
+
 
 
 
