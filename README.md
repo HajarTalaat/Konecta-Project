@@ -142,6 +142,8 @@ Expected result:
 
 ![p11](https://github.com/user-attachments/assets/bc8389c0-b409-4b68-8b91-fc028e66b244)
 
+![image](https://github.com/user-attachments/assets/7e532695-ac89-4965-be0c-ac1b9eae0943)
+
 
 3. Environment Variables Passed via ConfigMap/Secret:
 REDIS_HOST and ENVIRONMENT are injected through Kubernetes manifests:
