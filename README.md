@@ -2,6 +2,9 @@
 
 # Konecta-Graduation-Project
 
+![diagram-export-4-27-2025-11_43_19-PM](https://github.com/user-attachments/assets/007ebf8d-0e74-4a55-9a80-c7d0806fef40)
+
+
 # ✅ Step 1: Infrastructure Provisioning with Terraform:
 
 Used an existing VPC:
@@ -181,6 +184,67 @@ AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY
 REDIS_HOST
 
 ECR login credentials (if needed separately)
+
+
+# 📊 Step 6: Monitoring and Visualization with Prometheus & Grafana:
+
+1. Install Prometheus and Grafana via Helm
+
+✅ Prometheus will automatically start scraping Kubernetes node and pod metrics.
+
+✅ Grafana will be exposed via a LoadBalancer (get its external IP using kubectl get svc -n monitoring).
+
+2. Access Grafana Dashboard
+
+Access Grafana via browser: http://<EXTERNAL-IP>:80
+
+Configure Data Source in Grafana
+
+Navigate to Configuration → Data Sources
+
+Choose Prometheus
+
+URL: http://prometheus-server.monitoring.svc.cluster.local
+
+Save & Test
+
+
+4. Import Grafana Dashboards
+   
+📌 Dashboard 1: EKS Cluster Health and Resource Utilization
+
+Import community dashboard:
+
+Go to Dashboards → Import
+
+Use ID 315 (Kubernetes Cluster Monitoring) or a similar EKS-compatible dashboard
+
+This dashboard shows:
+
+Node/pod health
+
+CPU and memory usage
+
+Pod restart counts
+
+Cluster capacity and load
+
+📌 Dashboard 2: Jenkins EC2 VM Monitoring
+
+Install Node Exporter on Jenkins VM:
+
+_ Update Prometheus config to scrape Jenkins VM
+
+Import Node Exporter Dashboard:
+
+Go to Grafana → Dashboards → Import
+
+Use ID 1860 (Node Exporter Full)
+
+Select data source as Prometheus
+
+
+
 
 
 
