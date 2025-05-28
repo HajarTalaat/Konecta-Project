@@ -2,15 +2,15 @@
 
 # Konecta-Graduation-Project
 
-📚 Project Overview
+# 📚 Project Overview
 
 This project simulates a real-world DevOps workflow by designing, automating, and deploying a containerized Python web application. The project demonstrates the full DevOps lifecycle—covering version control, infrastructure provisioning with Terraform and Ansible, containerization using Docker, orchestration on Kubernetes via AWS EKS, automated CI/CD with Jenkins, monitoring with Prometheus and Grafana, and secure secrets management. The final output includes working infrastructure, pipeline execution.
 
-🖼️ Project Architecture Diagram
+# 🖼️ Project Architecture Diagram
 
 Before getting into the implementation details, here's a high-level diagram of the project's architecture. It illustrates the various components of the DevOps pipeline, from version control to infrastructure provisioning, containerization, CI/CD automation, deployment, and monitoring.
 
-![diagram-export-4-27-2025-11_43_19-PM](https://github.com/user-attachments/assets/007ebf8d-0e74-4a55-9a80-c7d0806fef40)
+![diagram-export-4-27-2025-11_59_47-PM](https://github.com/user-attachments/assets/db9d10f0-85b5-45db-b03a-785370ffc660)
 
 
 # ✅ Step 1: Infrastructure Provisioning with Terraform:
