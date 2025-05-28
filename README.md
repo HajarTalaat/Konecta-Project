@@ -1,5 +1,3 @@
-# Konecta-Project
-
 # Konecta-Graduation-Project
 
 # 📚 Project Overview
@@ -11,6 +9,38 @@ This project simulates a real-world DevOps workflow by designing, automating, an
 Before getting into the implementation details, here's a high-level diagram of the project's architecture. It illustrates the various components of the DevOps pipeline, from version control to infrastructure provisioning, containerization, CI/CD automation, deployment, and monitoring.
 
 ![diagram-export-4-27-2025-11_59_47-PM](https://github.com/user-attachments/assets/db9d10f0-85b5-45db-b03a-785370ffc660)
+
+
+# 🛠 Technologies Used
+
+AWS (EKS, EC2, S3, ECR)
+
+Terraform (Infrastructure Provisioning)
+
+Ansible (Server Configuration)
+
+Docker (Containerization)
+
+Kubernetes (Orchestration)
+
+Jenkins (CI/CD Automation)
+
+Prometheus and Grafana (Monitoring)
+
+GitHub (Version Control)
+
+
+# 📋 Prerequisites
+
+Before starting, ensure you have the following tools installed:
+
+Terraform: To provision infrastructure on AWS (EKS, EC2, S3).
+
+Ansible: For automating the Jenkins setup.
+
+AWS CLI: For managing AWS resources from the command line.
+
+kubectl: To interact with the Kubernetes cluster.
 
 
 # ✅ Step 1: Infrastructure Provisioning with Terraform:
@@ -253,8 +283,7 @@ Select data source as Prometheus
 
 ![prometheus-dashboard](https://github.com/user-attachments/assets/fbc2d464-6ab9-4d40-847a-507749a04433)
 
-![cluster-dashboard](https://github.com/user-attachments/assets/4e633218-aa9c-4422-a124-6e601c63e0b1)
-
+![cluster-dashboard](https://github.com/user-attachments/assets/f2d8d4e4-5d7c-4e04-b054-2051b8b32c33)
 
 
 
